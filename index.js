@@ -1,8 +1,8 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
-import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js"
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js"
 
 const appSettings = { 
-    databaseURL: "https://playground-4febd-default-rtdb.europe-west1.firebasedatabase.app/"
+    databaseURL: "https://playground-2-f1680-default-rtdb.firebaseio.com/"
 }
 
 const app = initializeApp(appSettings)
@@ -61,4 +61,5 @@ function appendItemToShoppingListEl(item) {
         remove(exactLocationOfItemInDB)
     })
     
-    shoppingListEl.append(newEl) 
+    shoppingListEl.append(newEl)
+}
