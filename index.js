@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js"
-import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js"
 
 const appSettings = { 
     databaseURL: "https://playground-4febd-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -19,26 +19,46 @@ addButtonEl.addEventListener("click", function() {
     push(shoppingListInDB, inputValue)
 
     clearInputFieldEl()
-
-    
 })
 
-onValue(shoppingListInDB, function(snapshot)) {
-    let itemsArray = Object.values(snapshot.val())
+onValue(shoppingListInDB, function(snapshot) {
+    if (snapshot.exists()) {
+        let itemsArray = Object.entries(snapshot.val()) 
 
-    shoppingListEl.innerHTML = ""
+        clearShoppingListEl()
 
-    for (let i =0; i< itemsArray.length; i++){
-        appendItemToShoppingListEl(itemsArray[i])
+        for (let i = 0; i < itemsArray.length; i++) {
+            let currentItem = itemsArray[i]
+            let currentItemID = currentItem[0]
+            let currentItemValue = currentItem[1]
+            
+            appendItemToShoppingListEl(currentItem)
+        }
+    } else {
+        shoppingListEl.innerHTML = "No items here... yet"
     }
+})
 
-    console.log(itemsArray)
+function clearShoppingListEl() {
+    shoppingListEl.innerHTML = ""
 }
 
 function clearInputFieldEl() {
     inputFieldEl.value = ""
 }
 
-function appendItemToShoppingListEl(itemValue) {
-    shoppingListEl.innerHTML += '<li>${itemValue}</li>'
-}
+function appendItemToShoppingListEl(item) {
+    let itemID = item[0]
+    let itemValue = item[1]
+    
+    let newEl = document.createElement("li")
+    
+    newEl.textContent = itemValue
+    
+    newEl.addEventListener("click", function() {
+        let exactLocationOfItemInDB = ref(database, `shoppingList/${itemID}`)
+        
+        remove(exactLocationOfItemInDB)
+    })
+    
+    shoppingListEl.append(newEl) 
